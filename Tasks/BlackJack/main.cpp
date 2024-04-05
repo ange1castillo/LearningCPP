@@ -9,6 +9,12 @@ namespace Settings{
 	constexpr int minimumDealerScore { 17 };
 }
 
+enum GameResults{
+	playerWon,
+	dealerWon,
+	tie,
+};
+
 struct Card {
 	enum Rank{
 		ace,
@@ -169,7 +175,7 @@ bool playerTurn(Deck& deck, Player& player){
 	return false;
 }
 
-bool startRound(){
+GameResults startRound(){
 	Deck deck {};
 	deck.shuffle();
 
@@ -185,19 +191,35 @@ bool startRound(){
 	player.addScore(playerCard2);
 	std::cout << "You have score: " << player.score << '\n';
 
-	if(playerTurn(deck, player)){
-		return false;
-	};
-
-	if(dealerTurn(deck, dealer)){
-		return true;
+	if(player.score != Settings::winningScore){
+		if(playerTurn(deck, player)){
+			return GameResults::dealerWon;
+		};
 	}
 
-	return (player.score > dealer.score);
+	if(dealerTurn(deck, dealer)){
+		return GameResults::playerWon;
+	}
+
+	if(player.score == dealer.score){
+		return GameResults::tie;
+	}
+
+	return (player.score > dealer.score) ? GameResults::playerWon : GameResults::dealerWon;
 }
 
 void play(){
-	std::cout << (startRound() ? "You Win!\n" : "You lose!\n");
+	switch(startRound()){
+		case GameResults::dealerWon:
+			std::cout << "You lose!\n";
+			break;
+		case GameResults::playerWon:
+			std::cout << "You win!\n";
+			break;
+		case GameResults::tie:
+			std::cout << "It's a tie!\n";
+			break;
+	}
 }
 
 void startGame(){
