@@ -92,13 +92,13 @@ int main() {
         new Circle { Point{ 7, 8 }, 3 }
     };
 
-    for(const auto& shape : shapes) {
+    for(const auto* shape : shapes) {
         std::cout << *shape << '\n';
     }
 
     std::cout << "The largest radius is: " << getLargestRadius(shapes) << '\n';
     
-    for(const auto& shape : shapes) {
+    for(const auto* shape : shapes) {
         delete shape;
     }
 
